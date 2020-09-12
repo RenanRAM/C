@@ -1,0 +1,503 @@
+/******************************************************************************
+Quando digitar 5(sair), todos os cadastros serão impressos em "D:\\Documentos\\Univates" , mude isso para seu pc (linha 220)***********/
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_CAD 1000
+#define DIR "D:\\Documentos\\Univates\\cadastro.txt"
+void inicializaDados(char livre[]) {
+    int i;
+    for(i = 0; i < MAX_CAD; i++) {
+        livre[i] = 'S';
+    }
+}
+
+void limpaTela() {
+    int i;
+    for(i = 0; i < 50; i ++) {
+       printf("\n");
+    }
+}
+void substituiChar(char *cp, char cs, char c2){
+    while(*cp != 0){
+        if(*cp == cs){
+            *cp = c2;
+        }
+        cp++;
+    }
+}
+int substituiString(char *cp, char cs[], char c2[]){//não esté pronto
+    int a = 0;
+    int b = 0;
+    int c = 0;
+    int len = length(cs);
+    while(*cp != 0){
+        while(cs[a] != 0){
+            if(*cp != cs[a]){
+                b = 0;
+                break;
+            }else{
+                b++;
+            }
+            if(b == len){
+                c++;
+            }
+            a++;
+        }
+        
+        cp++;
+    }
+    return c;
+    
+}
+
+int length(char mens[]) {
+   int i = 0;
+   while(mens[i] != 0){
+      i++;
+   }
+
+   return i + 1;
+}
+
+char comparaStringpi(char *s1, char *s2, int pi){//pi = ponto inicial
+    s1 += pi;
+    while(*s2 != 0){
+        if(*s1 != *s2){
+            return 'n';
+        }
+        s1++;
+        s2++;
+    }
+    return 's';
+}
+void igualaString2(char *sfonte, char *sfinal, int n){//não está pronto, é muito mais complicado que isso
+    while(*sfonte != 0){
+        *sfinal = *sfonte;
+        sfonte++;
+        sfinal++;
+    }
+}    
+void igualaString(char *sfonte, char *sfinal, int n){
+    int nn = 0;
+    while(*sfonte != 0){
+        *sfinal = *sfonte;
+        sfonte++;
+        sfinal++;
+    }
+    while(nn != n){
+        *sfinal = 0;
+        sfinal++;
+        nn++;
+    }
+}    
+
+void antispace(char ss[]){
+    int a = 0;
+    int b = 0;
+    
+    while(ss[a] != 0){
+        
+        if(ss[a] == ' '){
+            
+            if(a == 0){
+                b = 0; //só para garantir kk
+                while(ss[b] == ' '){
+                    b++;
+                }
+                while(ss[b] != 0){
+                    ss[a] = ss[b];
+                    a++;
+                    b++;
+                }
+                while(ss[a] != 0){
+                    ss[a] = 0;
+                    a++;
+                }
+            }else{
+               
+               //ainda não está pronto o resto
+                
+            }
+            
+        }
+        
+        a++;
+    }
+    
+}
+
+
+
+
+
+int mostraMenu() {
+    int opcao;
+    char tit[] = "**-__-**$$$$$$|--System--|$$$$$$**-__-**\0";
+    janela(tit, 5, 0, 12, 53, 61, 0);
+    color(11, 0);
+    moveTo(6, 5);
+    printf("1 - Incluir"); moveTo(7, 5);
+    printf("2 - Alterar"); moveTo(8, 5);
+    printf("3 - Excluir"); moveTo(9, 5);
+    printf("4 - Listar"); moveTo(10, 5);
+    printf("5 - Sair"); moveTo(11, 5);
+    printf("Qual a sua opção ");
+    printf("\n");
+    
+    printf("\n");
+    moveTo(11, 30);
+    scanf("%d", &opcao);
+    moveTo(15, 0);
+
+    return opcao;
+}
+char comparaString(char *s1, char *s2){
+    while((*s1 != 0) || (*s2 != 0)){
+        if(*s1 != *s2){
+            return 'n';
+        }
+        s1++;
+        s2++;
+    }
+    return 's';
+}
+
+int obterID(char lista[MAX_CAD][100]){
+    char no[100];
+    int a = 0;
+    printf("\n---Digite o nome---\n");
+    limpaBuffer();
+    gets(no);
+    color(1, 0);
+    while(a <= MAX_CAD){
+        if(comparaString(no, lista[a]) == 's'){
+            printf("Nome encontrado");
+            return a;
+        }
+        a++;
+    }
+    printf("Nome NÃO encontrado");
+    return -1;
+}
+int buscarID(char no[], char lista[MAX_CAD][100], char livre[]){//►►► conta quantos usuários com esse nome já existem
+    int a = 0;
+    int contador = 0;
+    color(1, 0);
+    while(a <= MAX_CAD){
+        if(comparaString(no, lista[a]) == 's' && (livre[a] == 'F')){
+            contador++;
+        }
+        a++;
+    }
+    return contador;
+}
+
+int buscaLivre(char livre[]) {
+    int pos = 0;
+    while(livre[pos] != 'S') {
+        pos ++;
+    }
+
+    return pos;
+}
+
+void limpaBuffer() {
+    char c;
+    while ((c = getchar()) != '\n' && c != EOF); // consome o buffer
+}
+
+int pedeConfirmacao() {
+    char c;
+
+    printf("\n\n| ►►►►Confirma (S/N)◄◄◄◄");
+
+    limpaBuffer();
+
+    c = getchar();
+
+    return c == 'S' || c == 's'; // (C - 67 ou c - 100) retorna 0 ou 1
+}
+void moveTo(int row, int col) {
+   printf("\x1b[%d;%df", row, col);
+}
+
+void caixa(int linhaInicial, int colunaInicial, int linhaFinal, int colunaFinal) {
+    int linha;
+    int coluna;
+    int s;
+    color(14, 0);
+    for(linha = linhaInicial + 1; linha < linhaFinal + 2; linha++) {
+       moveTo(linha, colunaInicial); printf(" ");
+       for(coluna = colunaInicial + 1; coluna < colunaFinal + 2; coluna++) {
+            moveTo(linha, coluna); printf(" ");
+            
+        }
+       moveTo(linha, colunaFinal); printf(" ");
+    }
+    color(11, 0);//(9 a 15) cor de fundo da caixa---------------------cor de fundo da caixa------------------cor de fundo da caixa---------------cor de fundo da caixa
+    for(linha = linhaInicial; linha < linhaFinal; linha++) {
+       moveTo(linha, colunaInicial); printf(" ");
+       for(coluna = colunaInicial; coluna < colunaFinal; coluna++) {
+            moveTo(linha, coluna); printf(" ");
+            
+        }
+       moveTo(linha, colunaFinal); printf(" ");
+    }
+        
+   
+    color(1, 0);
+    for(linha = linhaInicial; linha < linhaFinal; linha++) {
+       moveTo(linha, colunaInicial); printf("\u2502");
+       moveTo(linha, colunaFinal); printf("\u2502");
+    }
+        
+   for(coluna = colunaInicial; coluna < colunaFinal; coluna++) {
+       moveTo(linhaInicial, coluna); printf("\u2500");
+       moveTo(linhaFinal, coluna); printf("\u2500");
+    }
+    moveTo(linhaFinal + 1, colunaInicial);
+    color(1 , 0); printf("  ");    
+    
+    moveTo(linhaInicial, colunaInicial); printf("\u2502"); 
+    moveTo(linhaInicial, colunaFinal); printf("\u2502"); 
+    moveTo(linhaFinal, colunaInicial); printf("\u2502"); 
+    moveTo(linhaFinal, colunaFinal); printf("\u2502"); 
+    
+}
+void janela(char titulo[], int li, int ci, int lf, int cf, int z, int x){
+    int tisz = floor(length(titulo) / 2);
+    int meiof = floor((cf + ci) / 2);
+    moveTo(li - 1, meiof - tisz + 1);
+    color(z, x);
+    printf("%s", titulo);
+    caixa(li, ci, lf, cf);
+    color(z, x);
+    moveTo(li - 1, ci);
+    printf("[");
+    moveTo(li - 1, cf);
+    printf("]");
+    moveTo(lf - 1, ci + 1);
+    
+}
+
+void clrscr() {
+    printf("\x1b[2J");
+}
+
+void color(int cor, int fundo) {
+   printf("\033[%d;%dm", fundo, 31 + cor);
+}
+void printInfo(char a[], char b[], int c, float d){
+    printf("\nNome_______: %s", a);
+    printf("\nEndereco___: %s", b);
+    printf("\nIdade______: %d", c);
+    printf("\nSalario__R$: %5.2f", d);
+}
+void tt(){
+    printf("\nPressione <enter> para continuar...");
+    limpaBuffer();
+    getchar();
+}
+int totalf(char livre[]){
+    int a = 0;
+    int b = 0;
+    while(a < MAX_CAD){
+        if(livre[a] == 'F'){
+            b++;
+        }
+        a++;
+    }
+    return b;
+}
+
+
+
+
+void main(void) {//---------------------------------------------------inicio------------------------------------------------------------
+    int contf = 0;
+    char nome[MAX_CAD][100];
+    char endereco[MAX_CAD][100];
+    int idade[MAX_CAD];
+    float salario[MAX_CAD];
+    char livre[MAX_CAD];
+    char cor;
+    int opcao = 0;
+    int pos;
+    char nome_pre[100];
+    inicializaDados(livre);
+
+    FILE *file;
+    file = fopen("D:\\Documentos\\Univates\\cadastro.txt", "r");
+    if(file != NULL){
+        while(fgets(nome[pos], 99, file) != NULL){
+            substituiChar(nome[pos], '\n', 0);
+            fgets(endereco[pos], 99, file);
+            substituiChar(endereco[pos], '\n', 0);
+            fscanf(file, "%i\n", &idade[pos]);
+            
+            fscanf(file, "%f\n", &salario[pos]);
+            
+            livre[pos] = 'F';
+            pos++;
+        }
+        fclose(file);
+    }
+    file = fopen("D:\\Documentos\\Univates\\cadastro.txt", "w");
+    printf("\n%i\n", pos);
+    
+    
+    while(opcao != 5) {
+        limpaTela();
+
+        opcao = mostraMenu();
+        
+        if(opcao == 1) {
+            limpaTela();
+            limpaBuffer();
+            pos = buscaLivre(livre);
+            janela("¨¨¨¨\0", 2, 0, 16, 130, 1, 0);
+            moveTo(2, 1);
+            printf("\n|  Nome: ");
+            gets(nome[pos]);
+            antispace(nome);
+            printf("\n|  Endereco: ");
+            gets(endereco[pos]);
+            printf("\n|  Idade: ");
+            scanf("%d", &idade[pos]);
+            printf("\n|  Salario R$: ");
+            scanf("%f", &salario[pos]);
+            livre[pos] = 'F';
+            if(buscarID(nome[pos], nome, livre) < 2){
+                if(!pedeConfirmacao()) {
+                    livre[pos] = 'S';
+                }
+            }else{
+                color(0, 0);
+                printf("Usuário já existe. Não foi possível realizar o cadastro.");
+                livre[pos] = 'S';
+                tt();
+            }
+            
+            
+        }
+        if(opcao == 2){ // alterar
+            pos = obterID(nome);
+            if((pos != -1) && (livre[pos] != 'S')){
+                limpaTela();
+                janela("Info", 2, 4, 7, 100, 4, 1);
+                moveTo(3, 5);
+                printf("Nome_______: %s", nome[pos]);
+                moveTo(4, 5);
+                printf("Endereco___: %s", endereco[pos]);
+                moveTo(5, 5);
+                printf("Idade______: %d", idade[pos]);
+                moveTo(6, 5);
+                printf("Salario__R$: %5.2f\n", salario[pos]);
+                janela("Alteração", 11, 4, 16, 100, 4, 1);
+                moveTo(12, 5);
+                printf("Nome_______:"); gets(nome_pre);
+                moveTo(13, 5);
+                printf("Endereco___:"); gets(endereco[pos]);
+                moveTo(14, 5);
+                printf("Idade______:"); scanf("%d", &idade[pos]);
+                moveTo(15, 5);
+                printf("Salario__R$:"); scanf("%f", &salario[pos]);
+                printf("\n\n");
+                if(buscarID(nome_pre, nome, livre) < 1){
+                    igualaString(nome_pre, nome[pos], 100);
+                }else{
+                    printf("Aviso!! ► Nome não foi alterado porque ele já existe");    
+                }
+                tt();
+                
+            }else{
+                limpaTela();
+                janela("Erro", 4, 4, 6, 37, 0, 1);
+                moveTo(5, 5);
+                color(0, 1);
+                printf("     Usuário não encontrado     ");
+                moveTo(8, 2);
+                tt();
+            }
+        }
+        if(opcao == 3){// excluir
+            pos = obterID(nome);
+            if((pos != -1) && (livre[pos] != 'S')){
+                limpaTela();
+                janela("Excluir??", 2, 4, 7, 100, 4, 1);
+                moveTo(3, 5);
+                printf("Nome_______: %s", nome[pos]);
+                moveTo(4, 5);
+                printf("Endereco___: %s", endereco[pos]);
+                moveTo(5, 5);
+                printf("Idade______: %d", idade[pos]);
+                moveTo(6, 5);
+                printf("Salario__R$: %5.2f", salario[pos]);
+                printf("\n");
+                if(pedeConfirmacao()){
+                    livre[pos] = 'S';
+                }
+                
+            }else{
+                limpaTela();
+                janela("Erro", 4, 4, 6, 37, 0, 1);
+                moveTo(5, 5);
+                color(0, 1);
+                printf("     Usuário não encontrado     ");
+                moveTo(8, 2);
+                tt();
+            }
+        }
+        if(opcao == 4) {//listar
+            pos = 0;
+            cor = 9;
+            while(pos < MAX_CAD) {
+                color(cor, 0);
+               if(livre[pos] == 'F') {
+                    printInfo(nome[pos], endereco[pos], idade[pos], salario[pos]);// criei um método para isso, pq o sor pediu kk
+               }
+               pos++;
+               cor++;
+               if(cor > 15){
+                   cor = 9;
+               }
+            }
+            tt();
+        }
+        if(opcao == 5){
+            printf("Voltando o menu principal");
+            
+            break;
+		}
+		if(opcao == 666){// só admin, opção secreta
+		    pos = 0;
+            color(13, 0);
+            while(pos < MAX_CAD) {
+               if(livre[pos] == 'S' && (comparaString("", nome[pos]) == 'n')){
+                  printInfo(nome[pos], endereco[pos], idade[pos], salario[pos]);
+               }
+               pos ++;
+            }
+            printf("!Você acaba de perder uma vida!");
+            tt();
+		}
+		
+    }
+    pos = 0;
+    opcao = totalf(livre);
+    while(pos < MAX_CAD){
+        if(livre[pos] == 'F'){
+            fprintf(file, "%s", nome[pos]);
+            fprintf(file, "\n%s", endereco[pos]);
+            fprintf(file, "\n%d", idade[pos]);
+            fprintf(file, "\n%.2f", salario[pos]);
+            contf++;
+            if(contf < opcao){
+                fprintf(file, "\n");
+            }
+        }
+        pos++;
+    }
+    fclose(file);
+}
